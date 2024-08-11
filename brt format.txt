@@ -1,0 +1,47 @@
+Documentation for the file format .brt:
+
+A BRT file is a plain text file. By its nature, it is close to csv files. 
+The encoding of the file depends on how the parser implementation of these files is configured, but it is usually utf-8.
+
+File structure:
+Structurally, the file consists of two parts: an optional header and a set of records.
+The header can be located in any part of the file (before records, after records, between records), at the discretion of the user.
+The header is needed to globally set some options for all records. Global tag and owner installation is now supported.
+An entry in the title always starts with an exclamation mark followed by the title name, followed by a colon and a value,
+example: "!Tag:Friends", "!Owner:Max".
+Each header entry is separated by a line break (which can be any: Windows, Unix line break).
+
+The set of records includes line-by-line data about a specific birthday.
+Each such record consists of parts separated by commas (like csv).
+The parts of the record are written from left to right and have the following meaning according to their position:
+1) The name of the person.
+There may not necessarily be a name, there may be a nickname, a nickname, and so on, at the discretion of the user;
+2) Date of birth. Required in the dd.mm.yyyy format (the remaining dates will not be considered valid);
+3) Owner optional (name or other title);
+4) Tag optional.
+It should be noted that if the optional part is not specified, then it is still worth separating with a comma the place where it should be
+(otherwise, how to determine where the tag is meant and where the owner is without specifying commas).
+
+Comments:
+brt files support single-line comments. 
+A comment is a line in which the first printed character is the lattice character (#). 
+When reading the file, the parser discards such lines (which begin with #).
+
+Spaces, indents, tabs:
+It is acceptable to put additional whitespace characters between parts of the record, between the records themselves, between the header key and its value. 
+All these whitespace characters are truncated by the parser and have no meaning in interpreting the contents of the file.
+
+Example of a valid brt file:
+
+#Optional header
+!Owner: Max
+!Tag: Friends
+
+Alex, 19.01.2002, ,
+Mary,   22.03.1998, ,
+Lary, 23.04.1994, Max,Best friend
+...
+
+Pay attention to the entry from Lary. 
+It clearly indicated the owner of the record and the tag. 
+But they will be ignored because we have a global header in which the tag and (or) the host have the highest priority for records.
